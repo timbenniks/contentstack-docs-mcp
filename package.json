@@ -9,13 +9,10 @@
   "scripts": {
     "index-docs": "tsx src/index-docs.ts",
     "search-docs": "tsx src/search-docs.ts",
-    "mcp": "tsx src/mcp.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test src/**/*.test.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/node": "2.1.0",
-    "@modelcontextprotocol/server": "2.1.0",
     "cloudflare": "7.1.0",
     "zod": "4.6.5"
   },

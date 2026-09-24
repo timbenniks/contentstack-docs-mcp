@@ -1,6 +1,6 @@
 # Contentstack developer docs search
 
-Indexes Contentstack developer documentation into Cloudflare AI Search and exposes retrieval through a CLI and an MCP server.
+Indexes Contentstack developer documentation into Cloudflare AI Search. Cloudflare hosts retrieval and the public MCP endpoint.
 
 ```text
 Contentstack sitemap
@@ -25,7 +25,7 @@ pnpm install
 cp .env.example .env
 ```
 
-Create a Cloudflare API token with **Account > AI Search:Edit** and **Account > AI Search:Run**.
+Create a Cloudflare API token with **Account > AI Search > Edit**.
 
 ```env
 CLOUDFLARE_ACCOUNT_ID=
@@ -65,24 +65,13 @@ Indexing can take a short time after upload. If a search returns nothing, wait a
 
 ## MCP
 
-Streamable HTTP (default):
+Cloudflare serves the MCP endpoint for the `contentstack-developer-docs` instance:
 
-```bash
-pnpm mcp
+```text
+https://4cdabb7e-44af-497b-99a4-582049010959.search.ai.cloudflare.com/mcp
 ```
 
-The server listens on `http://127.0.0.1:8788/mcp`. Set `PORT` or pass `--port` to change it.
-
-STDIO, for local clients:
-
-```bash
-pnpm mcp --stdio
-```
-
-Tools:
-
-- `search_docs({ query, limit? })` returns structured results with source URLs.
-- `get_document({ url })` returns the full Markdown for a `/docs/developers/` page.
+Clients call the built-in `search` tool. This repository does not run an MCP server.
 
 ## Tests
 
