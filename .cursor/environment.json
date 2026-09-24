@@ -1,0 +1,4 @@
+{
+  "name": "Contentstack docs search",
+  "install": "pnpm install --frozen-lockfile"
+}
