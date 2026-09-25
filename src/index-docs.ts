@@ -21,6 +21,11 @@ if (limit !== undefined && (!Number.isInteger(limit) || limit < 1)) {
 
 const xml = await fetchSitemap();
 const pages = developerDocPages(parseSitemapLocs(xml));
+if (pages.length === 0) {
+  throw new Error(
+    "Sitemap contained no developer documentation pages; refusing to update the index",
+  );
+}
 console.log(`Found ${pages.length} developer documentation pages`);
 
 const selected = limit === undefined ? pages : pages.slice(0, limit);

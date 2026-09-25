@@ -45,4 +45,15 @@ describe("manifest diffing", () => {
     });
     assert.deepEqual(plan.remove, []);
   });
+
+  it("does not treat an empty sitemap as every document disappearing", () => {
+    const plan = planIndex({
+      manifest,
+      documents: [],
+      discoveredIds: new Set(),
+    });
+    assert.deepEqual(plan.upsert, []);
+    assert.deepEqual(plan.skip, []);
+    assert.deepEqual(plan.remove, []);
+  });
 });

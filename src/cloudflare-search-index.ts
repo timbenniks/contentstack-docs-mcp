@@ -37,9 +37,14 @@ export class CloudflareSearchIndex implements SearchIndex {
 
   async upsert(document: Document): Promise<void> {
     await this.ensureInstance();
-    const key = itemKey(document.id);
-    const existing = await this.findByKey(key);
-    if (existing) await this.deleteItem(existing.id);
+    const currentKey = itemKey(document.id);
+    const nextKey = nextItemKey(document.id);
+    const current = await this.findByKey(currentKey);
+    const next = await this.findByKey(nextKey);
+    if (current && next) await this.deleteItem(next.id);
+
+    const existing = current ?? next;
+    const key = !existing || existing.key === nextKey ? currentKey : nextKey;
 
     const uploaded = await this.client.aiSearch.namespaces.instances.items.upload(this.instanceId, {
       account_id: this.accountId,
@@ -59,13 +64,15 @@ export class CloudflareSearchIndex implements SearchIndex {
       },
     });
     await this.waitUntilSettled(uploaded);
+    if (existing) await this.deleteItem(existing.id);
   }
 
   async remove(id: string): Promise<void> {
     await this.ensureInstance();
-    const existing = await this.findByKey(itemKey(id));
-    if (!existing) return;
-    await this.deleteItem(existing.id);
+    const current = await this.findByKey(itemKey(id));
+    const next = await this.findByKey(nextItemKey(id));
+    if (current) await this.deleteItem(current.id);
+    if (next) await this.deleteItem(next.id);
   }
 
   async search(query: string, options?: SearchOptions): Promise<SearchResult[]> {
@@ -169,6 +176,10 @@ export class CloudflareSearchIndex implements SearchIndex {
 
 export function itemKey(id: string): string {
   return `${id}.md`;
+}
+
+function nextItemKey(id: string): string {
+  return `${id}.next.md`;
 }
 
 function stringField(metadata: { [key: string]: unknown }, key: string): string {

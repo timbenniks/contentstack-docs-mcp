@@ -49,7 +49,10 @@ export function planIndex(input: {
     upsert.push(document.id);
   }
 
-  const remove = Object.keys(input.manifest).filter((id) => !input.discoveredIds.has(id));
+  const remove =
+    input.discoveredIds.size === 0
+      ? []
+      : Object.keys(input.manifest).filter((id) => !input.discoveredIds.has(id));
   return { upsert, skip, remove };
 }
 
